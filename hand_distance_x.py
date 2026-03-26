@@ -1,3 +1,19 @@
+import ctypes
+
+# Fix: mediapipe shared lib does not export 'free' on Windows (Python 3.13)
+# We intercept CDLL.__getitem__ to redirect 'free' to ucrtbase.dll
+_orig_cdll_getitem = ctypes.CDLL.__getitem__
+
+def _patched_cdll_getitem(self, name_or_ordinal):
+    try:
+        return _orig_cdll_getitem(self, name_or_ordinal)
+    except AttributeError:
+        if name_or_ordinal == "free":
+            return _orig_cdll_getitem(ctypes.CDLL("ucrtbase.dll"), "free")
+        raise
+
+ctypes.CDLL.__getitem__ = _patched_cdll_getitem
+
 import math
 import cv2
 import numpy as np
