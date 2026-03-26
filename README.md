@@ -51,7 +51,7 @@ python hand_distance_x.py
 - للتعرف على الوجه بدقة: اجمع 30-50 صورة لكل شخص بزوايا وإضاءة مختلفة
 
 ## المؤلف
-OpenCV Learning Project
+bouhouch mohamed
 
 ## الترخيص
 MIT
