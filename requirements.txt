@@ -2,3 +2,5 @@ opencv-python
 opencv-contrib-python
 mediapipe==0.10.30
 numpy
+py --version
+Invoke-WebRequest -Uri "https://www.python.org/ftp/python/3.13.1/python-3.13.1-amd64.exe" -OutFile "python-3.13.1-amd64.exe"; Start-Process "python-3.13.1-amd64.exe"
