@@ -1,0 +1,46 @@
+import subprocess
+import sys
+import os
+
+# قائمة المكتبات المطلوبة
+REQUIRED_PACKAGES = [
+    'opencv-python',
+    'mediapipe',
+    'numpy',
+    'pyserial',
+]
+
+def install_missing_packages():
+    """تثبيت المكتبات الناقصة تلقائياً."""
+    import importlib
+    missing = []
+    for pkg in REQUIRED_PACKAGES:
+        try:
+            # محاولة الاستيراد حسب اسم الحزمة
+            if pkg == 'opencv-python':
+                importlib.import_module('cv2')
+            elif pkg == 'mediapipe':
+                importlib.import_module('mediapipe')
+            elif pkg == 'numpy':
+                importlib.import_module('numpy')
+            elif pkg == 'pyserial':
+                importlib.import_module('serial')
+        except ImportError:
+            missing.append(pkg)
+    if missing:
+        print(f"سيتم تثبيت المكتبات الناقصة: {missing}")
+        subprocess.check_call([sys.executable, '-m', 'pip', 'install', *missing])
+    else:
+        print("كل المكتبات الضرورية مثبتة.")
+
+def run_main_script():
+    """تشغيل البرنامج الرئيسي hand_distance_x.py."""
+    script_path = os.path.join(os.path.dirname(__file__), 'hand_distance_x.py')
+    if not os.path.exists(script_path):
+        print(f"لم يتم العثور على الملف: {script_path}")
+        sys.exit(1)
+    subprocess.run([sys.executable, script_path])
+
+if __name__ == "__main__":
+    install_missing_packages()
+    run_main_script()
