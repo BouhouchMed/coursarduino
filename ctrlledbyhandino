@@ -1,40 +1,32 @@
-#ifndef EightByEightDisplay_h
-#define EightByEightDisplay_h
+const int LED_PIN = 10;
+const int BAUD_RATE = 9600;
 
-#if defined(ARDUINO) && ARDUINO >= 100
-#include "Arduino.h"
-#else
-#include "WProgram.h"
-#endif
+void setup() {
+  Serial.begin(BAUD_RATE);
+  pinMode(LED_PIN, OUTPUT);
+  analogWrite(LED_PIN, 0);  // إطفاء LED في البداية
+  Serial.println("Arduino LED Controller Ready");
+  delay(500);
+}
 
-class EightByEightDisplay {
-public:
-  EightByEightDisplay();
-  void init(uint8_t hardwareConfig, const uint8_t rowPins[], const uint8_t columnPins[]);
-  void update(const uint8_t pixelsIn[8][8]);
-  void refresh();
+void loop() {
+  // قراءة السطر كامل من Serial
+  if (Serial.available() > 0) {
+    String input = Serial.readStringUntil('\n');
+    input.trim();  // إزالة المسافات الزائدة
+    
+    if (input.length() > 0) {
+      int pwm_value = input.toInt();
+      
+      // التحقق من أن القيمة في النطاق الصحيح
+      if (pwm_value >= 0 && pwm_value <= 255) {
+        analogWrite(LED_PIN, pwm_value);
+        Serial.print("LED PWM set to: ");
+        Serial.println(pwm_value);
+      } else {
+        Serial.println("Invalid value. Range is 0-255");
+      }
+    }
+  }
+}
 
-private:
-  uint8_t ROW_ON;
-  uint8_t ROW_OFF;
-  uint8_t COLUMN_ON;
-  uint8_t COLUMN_OFF;
-
-  uint8_t pixels[8][8];
-
-  uint8_t row[8];
-  uint8_t col[8];
-
-  void initializeCathodeAndAnodes(uint8_t hardwareConfig);
-  void initializePins(const uint8_t rowPins[], const uint8_t columnPins[]);
-  void initializePixelMatrix();
-
-  void rowON(uint8_t index);
-  void rowOFF(uint8_t index);
-  void columnON(uint8_t index);
-  void columnOFF(uint8_t index);
-  void allColumnsOFF();
-};
-
-#endif  //EightByEightDisplay_h
-        /// END ///
